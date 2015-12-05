@@ -62,6 +62,8 @@ describe('filters', function() {
     it('should format according different separators', function() {
       var num = formatNumber(1234567.1, pattern, '.', ',', 2);
       expect(num).toBe('1.234.567,10');
+      num = formatNumber(1e-14, pattern, '.', ',', 14);
+      expect(num).toBe('0,00000000000001');
     });
 
     it('should format with or without fractionSize', function() {
@@ -90,6 +92,39 @@ describe('filters', function() {
       expect(formatNumber(-0.0001, pattern, ',', '.', 3)).toBe('0.000');
       expect(formatNumber(-0.0000001, pattern, ',', '.', 6)).toBe('0.000000');
     });
+
+    it('should work with numbers that are close to the limit for exponent notation', function() {
+      // previously, numbers that n * (10 ^ fractionSize) > localLimitMax
+      // were ending up with a second exponent in them, then coercing to
+      // NaN when formatNumber rounded them with the safe rounding
+      // function.
+
+      var localLimitMax = 999999999999999900000,
+          localLimitMin = 10000000000000000000,
+          exampleNumber = 444444444400000000000;
+
+      expect(formatNumber(localLimitMax, pattern, ',', '.', 2))
+        .toBe('999,999,999,999,999,900,000.00');
+      expect(formatNumber(localLimitMin, pattern, ',', '.', 2))
+        .toBe('10,000,000,000,000,000,000.00');
+      expect(formatNumber(exampleNumber, pattern, ',', '.', 2))
+        .toBe('444,444,444,400,000,000,000.00');
+
+    });
+
+    it('should format large number',function() {
+      var num;
+      num = formatNumber(12345868059685210000, pattern, ',', '.', 2);
+      expect(num).toBe('12,345,868,059,685,210,000.00');
+      num = formatNumber(79832749837498327498274983793234322432, pattern, ',', '.', 2);
+      expect(num).toBe('7.98e+37');
+      num = formatNumber(8798327498374983274928, pattern, ',', '.', 2);
+      expect(num).toBe('8,798,327,498,374,983,000,000.00');
+      num = formatNumber(879832749374983274928, pattern, ',', '.', 2);
+      expect(num).toBe('879,832,749,374,983,200,000.00');
+      num = formatNumber(879832749374983274928, pattern, ',', '.', 32);
+      expect(num).toBe('879,832,749,374,983,200,000.00000000000000000000000000000000');
+    });
   });
 
   describe('currency', function() {
@@ -101,7 +136,7 @@ describe('filters', function() {
 
     it('should do basic currency filtering', function() {
       expect(currency(0)).toEqual('$0.00');
-      expect(currency(-999)).toEqual('($999.00)');
+      expect(currency(-999)).toEqual('-$999.00');
       expect(currency(1234.5678, "USD$")).toEqual('USD$1,234.57');
       expect(currency(1234.5678, "USD$", 0)).toEqual('USD$1,235');
     });
@@ -184,13 +219,10 @@ describe('filters', function() {
     });
 
     it('should filter exponentially large numbers', function() {
-      expect(number(1e50)).toEqual('1e+50');
-      expect(number(-2e100)).toEqual('-2e+100');
-    });
-
-    it('should ignore fraction sizes for large numbers', function() {
-      expect(number(1e50, 2)).toEqual('1e+50');
-      expect(number(-2e100, 5)).toEqual('-2e+100');
+      expect(number(1.23e50)).toEqual('1.23e+50');
+      expect(number(-2.3456e100)).toEqual('-2.346e+100');
+      expect(number(1e50, 2)).toEqual('1.00e+50');
+      expect(number(-2e100, 5)).toEqual('-2.00000e+100');
     });
 
     it('should filter exponentially small numbers', function() {
@@ -203,6 +235,14 @@ describe('filters', function() {
       expect(number(-1e-6, 6)).toEqual('-0.000001');
       expect(number(-1e-7, 6)).toEqual('0.000000');
       expect(number(-1e-8, 9)).toEqual('-0.000000010');
+    });
+
+    it('should filter exponentially small numbers when no fraction specified', function() {
+      expect(number(1e-10)).toEqual('0.000');
+      expect(number(0.0000000001)).toEqual('0.000');
+
+      expect(number(-1e-10)).toEqual('0.000');
+      expect(number(-0.0000000001)).toEqual('0.000');
     });
   });
 

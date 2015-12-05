@@ -62,6 +62,20 @@ $provide.value("$locale", {
       "Nov",
       "Des"
     ],
+    "STANDALONEMONTH": [
+      "Januarie",
+      "Februarie",
+      "Maart",
+      "April",
+      "Mei",
+      "Junie",
+      "Julie",
+      "Augustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember"
+    ],
     "WEEKENDRANGE": [
       5,
       6
@@ -97,9 +111,9 @@ $provide.value("$locale", {
         "maxFrac": 2,
         "minFrac": 2,
         "minInt": 1,
-        "negPre": "\u00a4\u00a0-",
+        "negPre": "-\u00a4",
         "negSuf": "",
-        "posPre": "\u00a4\u00a0",
+        "posPre": "\u00a4",
         "posSuf": ""
       }
     ]

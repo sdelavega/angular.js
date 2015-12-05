@@ -9,7 +9,7 @@ describe("$$rAFScheduler", function() {
 
     var taskSpy = jasmine.createSpy();
     var tasks = [taskSpy];
-    $$rAFScheduler(tasks);
+    $$rAFScheduler([tasks]);
     expect(taskSpy).toHaveBeenCalled();
   }));
 
@@ -19,56 +19,61 @@ describe("$$rAFScheduler", function() {
     var i, tasks = [];
 
     for (i = 0; i < 5; i++) {
-      tasks.push(jasmine.createSpy());
+      tasks.push([jasmine.createSpy()]);
     }
 
     $$rAFScheduler(tasks);
 
     for (i = 1; i < 5; i++) {
-      var taskSpy = tasks[i];
+      var taskSpy = tasks[i][0];
       expect(taskSpy).not.toHaveBeenCalled();
       $$rAF.flush();
       expect(taskSpy).toHaveBeenCalled();
     }
   }));
 
-  it('should parallelize multiple instances of itself into sequenced RAFs',
+  it('should space out subarrays by a RAF and run the internals in parallel',
     inject(function($$rAFScheduler, $$rAF) {
 
     var spies = {
-      a: spy(),
-      b: spy(),
-      c: spy(),
+      a: jasmine.createSpy(),
+      b: jasmine.createSpy(),
+      c: jasmine.createSpy(),
 
-      x: spy(),
-      y: spy(),
-      z: spy()
+      x: jasmine.createSpy(),
+      y: jasmine.createSpy(),
+      z: jasmine.createSpy()
     };
 
-    var t1 = [spies.a, spies.b, spies.c];
-    var t2 = [spies.x, spies.y, spies.z];
+    var items = [[spies.a, spies.x],
+                 [spies.b, spies.y],
+                 [spies.c, spies.z]];
 
-    $$rAFScheduler(t1);
+    expect(spies.a).not.toHaveBeenCalled();
+    expect(spies.x).not.toHaveBeenCalled();
+
+    $$rAFScheduler(items);
+
     expect(spies.a).toHaveBeenCalled();
+    expect(spies.x).toHaveBeenCalled();
+
+
+    expect(spies.b).not.toHaveBeenCalled();
+    expect(spies.y).not.toHaveBeenCalled();
 
     $$rAF.flush();
-    $$rAFScheduler(t2);
 
     expect(spies.b).toHaveBeenCalled();
-    expect(spies.x).toHaveBeenCalled();
+    expect(spies.y).toHaveBeenCalled();
+
+
+    expect(spies.c).not.toHaveBeenCalled();
+    expect(spies.z).not.toHaveBeenCalled();
 
     $$rAF.flush();
 
     expect(spies.c).toHaveBeenCalled();
-    expect(spies.y).toHaveBeenCalled();
-
-    $$rAF.flush();
-
     expect(spies.z).toHaveBeenCalled();
-
-    function spy() {
-      return jasmine.createSpy();
-    }
   }));
 
   describe('.waitUntilQuiet', function() {
@@ -101,45 +106,38 @@ describe("$$rAFScheduler", function() {
       expect(q3).toHaveBeenCalled();
     }));
 
-    it('should always execute itself before the next RAF task tick occurs',
-      inject(function($$rAFScheduler, $$rAF) {
+    it('should always execute itself before the next RAF task tick occurs', function() {
+      module(provideLog);
+      inject(function($$rAFScheduler, $$rAF, log) {
+        var quietFn = log.fn('quiet');
+        var tasks = [
+          [log.fn('task1')],
+          [log.fn('task2')],
+          [log.fn('task3')],
+          [log.fn('task4')]
+        ];
 
-      var log = [];
+        $$rAFScheduler(tasks);
+        expect(log).toEqual(['task1']);
 
-      var quietFn = logFactory('quiet');
-      var tasks = [
-        logFactory('task1'),
-        logFactory('task2'),
-        logFactory('task3'),
-        logFactory('task4')
-      ];
+        $$rAFScheduler.waitUntilQuiet(quietFn);
+        expect(log).toEqual(['task1']);
 
-      $$rAFScheduler(tasks);
-      expect(log).toEqual(['task1']);
+        $$rAF.flush();
 
-      $$rAFScheduler.waitUntilQuiet(quietFn);
-      expect(log).toEqual(['task1']);
+        expect(log).toEqual(['task1', 'quiet', 'task2']);
 
-      $$rAF.flush();
+        $$rAF.flush();
 
-      expect(log).toEqual(['task1', 'quiet', 'task2']);
+        expect(log).toEqual(['task1', 'quiet', 'task2', 'task3']);
 
-      $$rAF.flush();
+        $$rAFScheduler.waitUntilQuiet(quietFn);
 
-      expect(log).toEqual(['task1', 'quiet', 'task2', 'task3']);
+        $$rAF.flush();
 
-      $$rAFScheduler.waitUntilQuiet(quietFn);
-
-      $$rAF.flush();
-
-      expect(log).toEqual(['task1', 'quiet', 'task2', 'task3', 'quiet', 'task4']);
-
-      function logFactory(token) {
-        return function() {
-          log.push(token);
-        };
-      }
-    }));
+        expect(log).toEqual(['task1', 'quiet', 'task2', 'task3', 'quiet', 'task4']);
+      });
+    });
   });
 
 });

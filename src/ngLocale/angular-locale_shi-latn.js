@@ -80,6 +80,20 @@ $provide.value("$locale", {
       "nuw",
       "duj"
     ],
+    "STANDALONEMONTH": [
+      "innayr",
+      "b\u1e5bay\u1e5b",
+      "ma\u1e5b\u1e63",
+      "ibrir",
+      "mayyu",
+      "yunyu",
+      "yulyuz",
+      "\u0263uct",
+      "cutanbir",
+      "ktubr",
+      "nuwanbir",
+      "dujanbir"
+    ],
     "WEEKENDRANGE": [
       5,
       6
@@ -94,7 +108,7 @@ $provide.value("$locale", {
     "shortTime": "HH:mm"
   },
   "NUMBER_FORMATS": {
-    "CURRENCY_SYM": "\u20ac",
+    "CURRENCY_SYM": "dh",
     "DECIMAL_SEP": ",",
     "GROUP_SEP": "\u00a0",
     "PATTERNS": [

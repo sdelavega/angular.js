@@ -320,6 +320,85 @@ describe("$animate", function() {
     });
   });
 
+  it('should not issue a call to addClass if the provided class value is not a string or array', function() {
+    inject(function($animate, $rootScope, $rootElement) {
+      var spy = spyOn(window, 'jqLiteAddClass').andCallThrough();
+
+      var element = jqLite('<div></div>');
+      var parent = $rootElement;
+
+      $animate.enter(element, parent, null, { addClass: noop });
+      $rootScope.$digest();
+      expect(spy).not.toHaveBeenCalled();
+
+      $animate.leave(element, { addClass: true });
+      $rootScope.$digest();
+      expect(spy).not.toHaveBeenCalled();
+
+      $animate.enter(element, parent, null, { addClass: 'fatias' });
+      $rootScope.$digest();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+
+  it('should not break postDigest for subsequent elements if addClass contains non-valid CSS class names', function() {
+    inject(function($animate, $rootScope, $rootElement) {
+      var element1 = jqLite('<div></div>');
+      var element2 = jqLite('<div></div>');
+
+      $animate.enter(element1, $rootElement, null, { addClass: ' ' });
+      $animate.enter(element2, $rootElement, null, { addClass: 'valid-name' });
+      $rootScope.$digest();
+
+      expect(element2.hasClass('valid-name')).toBeTruthy();
+    });
+  });
+
+
+  it('should not issue a call to removeClass if the provided class value is not a string or array', function() {
+    inject(function($animate, $rootScope, $rootElement) {
+      var spy = spyOn(window, 'jqLiteRemoveClass').andCallThrough();
+
+      var element = jqLite('<div></div>');
+      var parent = $rootElement;
+
+      $animate.enter(element, parent, null, {removeClass: noop});
+      $rootScope.$digest();
+      expect(spy).not.toHaveBeenCalled();
+
+      $animate.leave(element, {removeClass: true});
+      $rootScope.$digest();
+      expect(spy).not.toHaveBeenCalled();
+
+      element.addClass('fatias');
+      $animate.enter(element, parent, null, { removeClass: 'fatias' });
+      $rootScope.$digest();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  it("should not alter the provided options input in any way throughout the animation", inject(function($animate, $rootElement, $rootScope) {
+    var element = jqLite('<div></div>');
+    var parent = $rootElement;
+
+    var initialOptions = {
+      from: { height: '50px' },
+      to: { width: '50px' },
+      addClass: 'one',
+      removeClass: 'two'
+    };
+
+    var copiedOptions = copy(initialOptions);
+    expect(copiedOptions).toEqual(initialOptions);
+
+    var runner = $animate.enter(element, parent, null, copiedOptions);
+    expect(copiedOptions).toEqual(initialOptions);
+
+    $rootScope.$digest();
+    expect(copiedOptions).toEqual(initialOptions);
+  }));
+
   describe('CSS class DOM manipulation', function() {
     var element;
     var addClass;
