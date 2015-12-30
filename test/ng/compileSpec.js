@@ -360,7 +360,6 @@ describe('$compile', function() {
     });
   });
 
-
   describe('compile phase', function() {
 
     it('should attach scope to the document node when it is compiled explicitly', inject(function($document) {
@@ -444,6 +443,15 @@ describe('$compile', function() {
       expect(element.html()).toBe("3");
     }));
 
+    it('should detect anchor elements with the string "SVG" in the `href` attribute as an anchor', inject(function($compile, $rootScope) {
+      element = jqLite('<div><a href="/ID_SVG_ID">' +
+        '<span ng-if="true">Should render</span>' +
+        '</a></div>');
+      $compile(element.contents())($rootScope);
+      $rootScope.$digest();
+      document.body.appendChild(element[0]);
+      expect(element.find('span').text()).toContain('Should render');
+    }));
 
     describe('multiple directives per element', function() {
       it('should allow multiple directives per element', inject(function($compile, $rootScope, log) {
@@ -3944,7 +3952,7 @@ describe('$compile', function() {
 
         compile('<div><span my-component ref="name">');
 
-        //change both sides to the same item withing the same digest cycle
+        //change both sides to the same item within the same digest cycle
         componentScope.ref = 'same';
         $rootScope.name = 'same';
         $rootScope.$apply();
@@ -6213,7 +6221,7 @@ describe('$compile', function() {
             var currentCleanData = jQuery.cleanData;
             jQuery.cleanData = function(elems) {
               cleanedCount += elems.length;
-              // Don't return the output and expicitly pass only the first parameter
+              // Don't return the output and explicitly pass only the first parameter
               // so that we're sure we're not relying on either of them. jQuery UI patch
               // behaves in this way.
               currentCleanData(elems);
@@ -7941,27 +7949,33 @@ describe('$compile', function() {
     });
 
 
-    it('should not normalize the element name', function() {
+    it('should match the normalized form of the element name', function() {
       module(function() {
         directive('foo', function() {
           return {
             restrict: 'E',
             scope: {},
             transclude: {
-              fooBarSlot: 'foo-bar'
+              fooBarSlot: 'fooBar',
+              mooKarSlot: 'mooKar'
             },
             template:
-              '<div class="other" ng-transclude="fooBarSlot"></div>'
+              '<div class="a" ng-transclude="fooBarSlot"></div>' +
+              '<div class="b" ng-transclude="mooKarSlot"></div>'
           };
         });
       });
       inject(function($rootScope, $compile) {
         element = $compile(
           '<foo>' +
-            '<foo-bar>baz</foo-bar>' +
+            '<foo-bar>bar1</foo-bar>' +
+            '<foo:bar>bar2</foo:bar>' +
+            '<moo-kar>baz1</moo-kar>' +
+            '<data-moo-kar>baz2</data-moo-kar>' +
           '</foo>')($rootScope);
         $rootScope.$apply();
-        expect(element.text()).toEqual('baz');
+        expect(element.children().eq(0).text()).toEqual('bar1bar2');
+        expect(element.children().eq(1).text()).toEqual('baz1baz2');
       });
     });
 
