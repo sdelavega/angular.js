@@ -1,3 +1,154 @@
+<a name="1.5.0-rc.1"></a>
+# 1.5.0-rc.1 quantum-fermentation (2016-01-15)
+
+
+## Features
+
+- **$compile:**
+  - Allow ES6 classes as controllers with `bindToController: true`
+  ([8955cfb6](https://github.com/angular/angular.js/commit/8955cfb6462f79a32caa641ffc002f1522f08220))
+  - Allow ES6 classes as controllers with `bindToController: true`
+  ([b0248b78](https://github.com/angular/angular.js/commit/b0248b7894649aa1e083698c66d01679fa66d1c1))
+- **$compileProvider:** - allow registering components with the component() method
+  ([feeb19787ca6e23e15578a4d1319f1c33853290c](https://github.com/angular/angular.js/commit/feeb19787ca6e23e15578a4d1319f1c33853290c))
+- **component:**
+  - default controllerAs to `$ctrl`
+  ([d91cf167](https://github.com/angular/angular.js/commit/d91cf167960d47ce38fec0d33cab6119268623f0),
+   [#13664](https://github.com/angular/angular.js/issues/13664), [#13710](https://github.com/angular/angular.js/issues/13710))
+  - disallow non-isolate scopes
+  ([f31c5a39](https://github.com/angular/angular.js/commit/f31c5a3924629795cd9169e69b9e20efd4a9d927),
+   [#13710](https://github.com/angular/angular.js/issues/13710))
+  - allow `component()` helper to copy over custom annotations
+  ([90975db5](https://github.com/angular/angular.js/commit/90975db5f91dfe44fa5dc4542e92c68e0d425929),
+   [#13741](https://github.com/angular/angular.js/issues/13741))
+- **$injector:** support instantiating classes.
+  ([8b6b4282](https://github.com/angular/angular.js/commit/8b6b42827186e5e4eb7a56f6b824c560a5058bd2))
+- **ngMock:** add support for `$animate.closeAndFlush()`
+  ([e1def1b8](https://github.com/angular/angular.js/commit/e1def1b8fe543fde09abda076d66606027f7dbeb),
+   [#13005](https://github.com/angular/angular.js/issues/13005), [#13576](https://github.com/angular/angular.js/issues/13576), [#13707](https://github.com/angular/angular.js/issues/13707))
+- **ngMock.$componentController:** add helper to instantiate controllers for components
+  ([dd14e0c4](https://github.com/angular/angular.js/commit/dd14e0c44d2963d217cd4eb28f1ad6e6a643d63f),
+   [#13683](https://github.com/angular/angular.js/issues/13683), [#13711](https://github.com/angular/angular.js/issues/13711))
+
+
+## Bug Fixes
+
+- **$animate:**
+  - allow enabled children to animate on disabled parents
+  ([8b636033](https://github.com/angular/angular.js/commit/8b6360338dca4bb7d8656d556bd7fb209e5aae73),
+   [#13179](https://github.com/angular/angular.js/issues/13179), [#13695](https://github.com/angular/angular.js/issues/13695))
+  - allow animations when pinned element is parent element
+  ([8f0b4825](https://github.com/angular/angular.js/commit/8f0b48259666c1496970d6ca90decb36d6fa3295),
+   [#13466](https://github.com/angular/angular.js/issues/13466))
+  - correctly access minErr
+  ([bc41ad8a](https://github.com/angular/angular.js/commit/bc41ad8aa8fc41ff30e9f68220a7c7c5fe194478))
+- **$animateCss:**
+  - only (de)register listeners when events have been added
+  ([959f2bbb](https://github.com/angular/angular.js/commit/959f2bbb2d12c23a74902433c6247290d8f2fb89),
+   [#13514](https://github.com/angular/angular.js/issues/13514))
+  - remove animation end event listeners on close
+  ([20604e7f](https://github.com/angular/angular.js/commit/20604e7fc4f69ecfafbd8d0c1fdc70d478075c3a),
+   [#10387](https://github.com/angular/angular.js/issues/10387))
+  - respect transition styles already on the element
+  ([de9777d8](https://github.com/angular/angular.js/commit/de9777d8193531472df4b57fdeb6650d7f7c1846),
+   [#12656](https://github.com/angular/angular.js/issues/12656), [#13333](https://github.com/angular/angular.js/issues/13333))
+- **$compile:**
+  - add missing variable declaration
+  ([6cdbda7c](https://github.com/angular/angular.js/commit/6cdbda7cf1cfc1d49eb98d42d8e823e65bebb90d))
+  - fix namespace detection for anchor elements
+  ([c9e6cf9b](https://github.com/angular/angular.js/commit/c9e6cf9be0d549fba234956f7e263f40d1bb1e76))
+- **component:**
+  - remove the ability to set the `restrict` option on `component()` helper
+  ([25bc5318](https://github.com/angular/angular.js/commit/25bc53180248bf5e8a6467c55d913cfa38fc7a3b),
+   [#13741](https://github.com/angular/angular.js/issues/13741))
+  - use `false` as default value for `transclude` in `component()` helper
+  ([6a47c0d7](https://github.com/angular/angular.js/commit/6a47c0d75d0c6f0bfb3b5492d1f05ec900387744),
+   [#13566](https://github.com/angular/angular.js/issues/13566), [#13581](https://github.com/angular/angular.js/issues/13581))
+  - allow passing template/templateUrl in array notation
+  ([99d601a0](https://github.com/angular/angular.js/commit/99d601a048ac2b82e2f74ae88c96773e5d1a7258))
+- **$controller:** allow identifiers containing `$`
+  ([4e1b36c2](https://github.com/angular/angular.js/commit/4e1b36c21686ad0ca4930d1d81f77a7d9cc35851),
+   [#13736](https://github.com/angular/angular.js/issues/13736))
+- **$injector:** workaround for MS Edge class detection
+  ([fabc6ab5](https://github.com/angular/angular.js/commit/fabc6ab5b01dc687aa8385da067752ba34da6524))
+- **$q:** make instanceof work for $q promises
+  ([b3ef5e08](https://github.com/angular/angular.js/commit/b3ef5e08528f5f1916876032700a016448fb196a))
+- **copy:**
+  - add support for ArrayBuffer, handle multiple references to ArrayBuffer
+  ([986647a9](https://github.com/angular/angular.js/commit/986647a968858121c1de472fc4913221dc8d339a))
+  - add support for String/Boolean/Number object types
+  ([7b51243b](https://github.com/angular/angular.js/commit/7b51243be597900b1f765495dadfea5fccd2228e))
+- **input:** fix URL validation being too strict
+  ([e3be5d6e](https://github.com/angular/angular.js/commit/e3be5d6efaec6537ab530640c64f452aa1006fcb),
+   [#13528](https://github.com/angular/angular.js/issues/13528), [#13544](https://github.com/angular/angular.js/issues/13544))
+- **isArrayLike:** recognize empty instances of an Array subclass
+  ([93c7251f](https://github.com/angular/angular.js/commit/93c7251f5f40bdbe050c74130d90331613d968a2),
+   [#13560](https://github.com/angular/angular.js/issues/13560), [#13708](https://github.com/angular/angular.js/issues/13708))
+- **linky:** throw error if input is not a string
+  ([98c2db7f](https://github.com/angular/angular.js/commit/98c2db7f9c2d078a408576e722407d518c7ee10a),
+   [#13547](https://github.com/angular/angular.js/issues/13547), [#13693](https://github.com/angular/angular.js/issues/13693))
+- **ngAnimate:**
+  - only copy over the animation options once
+  ([d4fa3313](https://github.com/angular/angular.js/commit/d4fa3313088a03d15ccbf266583d6ecaa0d22241),
+   [#13722](https://github.com/angular/angular.js/issues/13722), [#13578](https://github.com/angular/angular.js/issues/13578))
+  - allow event listeners on document in IE
+  ([e5cab951](https://github.com/angular/angular.js/commit/e5cab951f4e4969b092295b7f3ca7ec1d17eb9a6),
+   [#13548](https://github.com/angular/angular.js/issues/13548), [#13696](https://github.com/angular/angular.js/issues/13696))
+  - allow removing classes that are added by a running animation
+  ([776972ed](https://github.com/angular/angular.js/commit/776972ed9c49a62f5ad7c6f207209bf0f0c900bb),
+   [#13339](https://github.com/angular/angular.js/issues/13339), [#13380](https://github.com/angular/angular.js/issues/13380), [#13414](https://github.com/angular/angular.js/issues/13414), [#13472](https://github.com/angular/angular.js/issues/13472), [#13678](https://github.com/angular/angular.js/issues/13678))
+  - do not use event.timeStamp anymore for time tracking
+  ([e020b899](https://github.com/angular/angular.js/commit/e020b8993ec7b8e004c136ca40ea9bab02207dbf),
+   [#13494](https://github.com/angular/angular.js/issues/13494), [#13495](https://github.com/angular/angular.js/issues/13495))
+- **ngInclude:** do not compile template if original scope is destroyed
+  ([98776487](https://github.com/angular/angular.js/commit/98776487a04667aa36cb24088ead198bd03b607c))
+- **ngMock:** ignore empty javascript animations in $animate.closeAndFlush()
+  ([a801df71](https://github.com/angular/angular.js/commit/a801df719ea8b5996676d4e7a88a26a5ece471e7))
+- **ngOptions:** don't skip optgroup elements with value === ''
+  ([6858caf2](https://github.com/angular/angular.js/commit/6858caf251b16a52e73d62f65c7e9e26e1f199ae),
+   [#13487](https://github.com/angular/angular.js/issues/13487), [#13489](https://github.com/angular/angular.js/issues/13489))
+- **select:** re-define ngModelCtrl.$render in the select postLink fn
+  ([f7eab8d8](https://github.com/angular/angular.js/commit/f7eab8d8fe8cadecaee425f0db0c74e48619310c),
+   [#13583](https://github.com/angular/angular.js/issues/13583), [#13583](https://github.com/angular/angular.js/issues/13583), [#13663](https://github.com/angular/angular.js/issues/13663))
+
+
+## Breaking Changes
+
+- **$component**:
+*These breaking changes affect only applications updating from previous 1.5 beta / rc versions*
+
+  - Due to [d91cf167](https://github.com/angular/angular.js/commit/d91cf167960d47ce38fec0d33cab6119268623f0),
+the default `controllerAs` value for components is now `$ctrl` (previously the name of the component was used).
+To migrate, either set `controllerAs` to the component name, or change the property name in your templates
+to `$ctrl`
+
+  - Due to [25bc5318](https://github.com/angular/angular.js/commit/25bc5318), it is no longer possible to
+set the `restrict` option on directives created via the `module.component()` helper.
+All components are now element directives (`restrict: 'E'`). If you need a directive that is not an element then you must use the
+`module.directive()` helper instead.
+
+  - Due to [f31c5a39](https://github.com/angular/angular.js/commit/f31c5a3924629795cd9169e69b9e20efd4a9d927),
+components are now always created with `scope: {}` (isolate scope). Previously, it was also possible to create components
+with `scope: true` or `scope: false`. If your components rely on this scope configuration, you will have to
+create a regular directive instead.
+
+  - Due to [6a47c0d7](https://github.com/angular/angular.js/commit/6a47c0d75d0c6f0bfb3b5492d1f05ec900387744),
+the `transclude` property is now `false` by default (previously `true`). If you created components that expected
+transclusion then you must change your code to specify `transclude: true`.
+
+- **linky:** due to [98c2db7f](https://github.com/angular/angular.js/commit/98c2db7f9c2d078a408576e722407d518c7ee10a),
+
+Before this change, the filter assumed that the input (if not undefined/null) was of type 'string'
+and that certain methods (such as `.match()`) would be available on it. Passing a non-string value
+would most likely result in a not-very-useful error being thrown (trying to call a method that does
+not exist) or in unexpected behavior (if the input happened to have the assumed methods).
+
+After this change, a proper (informative) error will be thrown. If you want to pass non-string
+values through `linky`, you need to explicitly convert them to strings first.
+Since input values could be initialized asynchronously, `undefined` or `null` will still be
+returned unchanged (without throwing an error).
+
+
 <a name="1.5.0-rc.0"></a>
 # 1.5.0-rc.0 oblong-panoptikum (2015-12-09)
 
@@ -608,6 +759,16 @@ Closes #11719
 Applications that depend on this option can use  to turn the option back on,
 but while doing so, please read the warning provided in the  documentation for
 information on preventing click-hijacking attacks when this option is turned on.
+
+- **ngOptions:** due to [b71d7c3f](https://github.com/angular/angular.js/commit/b71d7c3f3c04e65b02d88b33c22dd90ae3cdfc27),
+
+If your data contains falsy values (`''`, `0`, `false` and `null`) for option groups, then these
+options will now be placed into option groups. Previously all of these falsy values were treated as
+the option not being a member of a group.
+
+Only option groups that are `undefined` will result in the option being put in no group.
+If you have data that contains falsy values that should not be used as groups then you must filter
+the values before passing them to `ngOptions` converting falsy values to `undefined`.
 
 - **ngOptions:** due to [ded25187](https://github.com/angular/angular.js/commit/ded2518756d4409fdfda0d4af243f2125bea01b5),
 
