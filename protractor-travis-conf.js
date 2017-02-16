@@ -9,16 +9,16 @@ if (process.env.BROWSER_PROVIDER === 'browserstack') {
     capabilitiesForBrowserStack({
       browserName: 'chrome',
       platform: 'MAC',
-      version: '34'
+      version: '49'
     }),
     capabilitiesForBrowserStack({
       browserName: 'firefox',
-      version: '28'
+      version: '47'
     }),
     capabilitiesForBrowserStack({
       browserName: 'safari',
       platform: 'MAC',
-      version: '7'
+      version: '9'
     })
   ];
 } else {
@@ -28,17 +28,17 @@ if (process.env.BROWSER_PROVIDER === 'browserstack') {
   config.multiCapabilities = [
     capabilitiesForSauceLabs({
       browserName: 'chrome',
-      platform: 'OS X 10.9',
-      version: '34'
+      platform: 'OS X 10.11',
+      version: '48'
     }),
     capabilitiesForSauceLabs({
       browserName: 'firefox',
-      version: '28'
+      version: '47'
     }),
     capabilitiesForSauceLabs({
       browserName: 'safari',
-      platform: 'OS X 10.9',
-      version: '7'
+      platform: 'OS X 10.11',
+      version: '9'
     })
   ];
 }
@@ -54,17 +54,18 @@ function capabilitiesForBrowserStack(capabilities) {
   return {
     'browserstack.user': process.env.BROWSER_STACK_USERNAME,
     'browserstack.key': process.env.BROWSER_STACK_ACCESS_KEY,
-    'browserstack.local' : 'true',
+    'browserstack.local': 'true',
     'browserstack.debug': 'true',
     'browserstack.tunnelIdentifier': process.env.TRAVIS_JOB_NUMBER,
     'tunnelIdentifier': process.env.TRAVIS_JOB_NUMBER,
 
-    'name': 'Angular E2E',
+    'name': 'AngularJS E2E',
     'build': process.env.TRAVIS_BUILD_NUMBER,
 
     'browserName': capabilities.browserName,
     'platform': capabilities.platform,
-    'version': capabilities.version
+    'version': capabilities.version,
+    'elementScrollBehavior': 1
   };
 }
 
@@ -72,11 +73,12 @@ function capabilitiesForSauceLabs(capabilities) {
   return {
     'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
 
-    'name': 'Angular E2E',
+    'name': 'AngularJS E2E',
     'build': process.env.TRAVIS_BUILD_NUMBER,
 
     'browserName': capabilities.browserName,
     'platform': capabilities.platform,
-    'version': capabilities.version
+    'version': capabilities.version,
+    'elementScrollBehavior': 1
   };
 }
